@@ -2,7 +2,6 @@ version: 2.1
 orbs:
   python: circleci/python@2
   docker: circleci/docker@1.7.0
-  ssh: circleci/ssh@1.0.3  # Use the SSH orb
 jobs:
   test-python:
     docker:
