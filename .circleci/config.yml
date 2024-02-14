@@ -25,7 +25,7 @@ jobs:
           name: Build and push Docker image
           command: |
             echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-            docker build --platform linux/arm64 -t $DOCKERHUB_USERNAME/fastapiv2:test_cd .
+            docker build -t $DOCKERHUB_USERNAME/fastapiv2:test_cd .
             docker push $DOCKERHUB_USERNAME/fastapiv2:test_cd
   deploy:
     docker:
