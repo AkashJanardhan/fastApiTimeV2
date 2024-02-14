@@ -10,10 +10,10 @@ def test_read_time():
     data = response.json()
     
     assert response.status_code == 200
-    assert "current_server_time" in data
+    assert "current_server_time x" in data
     # Ensure the returned time is a valid datetime string
     try:
-        parsed_time = parser.parse(data["current_server_time"])
+        parsed_time = parser.parse(data["current_server_time x"])
         assert isinstance(parsed_time, datetime.datetime)
     except ValueError:
-        assert False, "current_server_time is not a valid datetime"
+        assert False, "current_server_time x is not a valid datetime"
