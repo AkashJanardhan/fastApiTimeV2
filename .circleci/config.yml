@@ -28,13 +28,13 @@ jobs:
       - run:
           name: Build Docker Image
           command: |
-            docker build -t <your-username>/<your-repo-name>:${CIRCLE_SHA1} .
+            docker build -t akashjanardhan/fastapiv2:${CIRCLE_SHA1} .
       - docker/check:  # Optional: Check if the image has vulnerabilities
           name: Check Docker Image
-          image: <your-username>/<your-repo-name>:${CIRCLE_SHA1}
+          image: akashjanardhan/fastapiv2:${CIRCLE_SHA1}
       - docker/push:
           name: Push Docker Image
-          image: <your-username>/<your-repo-name>
+          image: akashjanardhan/fastapiv2
           tag: ${CIRCLE_SHA1}
           username: $DOCKERHUB_USERNAME  # Set in CircleCI project settings as environment variable
           password: $DOCKERHUB_PASSWORD  # Set in CircleCI project settings as environment variable
@@ -43,5 +43,5 @@ workflows:
     jobs:
       - test-python
       - build-and-push-docker:
-          requires:
+          requires:s
             - test-python
