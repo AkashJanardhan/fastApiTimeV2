@@ -25,7 +25,7 @@ jobs:
           name: Build and push Docker image
           command: |
             echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-            docker build -t $DOCKERHUB_USERNAME/fastapiv2:test_cd .
+            docker build --platform linux/arm64 -t $DOCKERHUB_USERNAME/fastapiv2:test_cd .
             docker push $DOCKERHUB_USERNAME/fastapiv2:test_cd
   deploy:
     docker:
@@ -37,7 +37,7 @@ jobs:
       - run:
           name: Deploy Application
           command: |
-            ssh -vvv -o StrictHostKeyChecking=no ubuntu@18.226.180.175 \<< EOF
+            ssh -o StrictHostKeyChecking=no ubuntu@18.226.180.175 \<< EOF
               sudo docker pull akashjanardhan/fastapiv2:test_cd
               sudo docker stop my-fastapi-app || true
               sudo docker rm my-fastapi-app || true
