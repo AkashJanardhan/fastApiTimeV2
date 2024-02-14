@@ -1,8 +1,7 @@
-# This config was automatically generated from your source code
-# Stacks detected: deps:python:.
 version: 2.1
 orbs:
   python: circleci/python@2
+  docker: circleci/docker@1.7.0  # Add the Docker orb
 jobs:
   test-python:
     # Install dependencies and run tests
@@ -16,19 +15,33 @@ jobs:
           command: pytest --junitxml=junit.xml || ((($? == 5)) && echo 'Did not find any tests to run.')
       - store_test_results:
           path: junit.xml
-  deploy:
-    # This is an example deploy job, not actually used by the workflow
+  build-and-push-docker:
+    # Use Docker environment
     docker:
       - image: cimg/base:stable
     steps:
-      # Replace this with steps to deploy to users
+      - checkout
+      # Setup Docker environment
+      - setup_remote_docker:
+          version: 20.10.6
+          docker_layer_caching: true
       - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
+          name: Build Docker Image
+          command: |
+            docker build -t <your-username>/<your-repo-name>:${CIRCLE_SHA1} .
+      - docker/check:  # Optional: Check if the image has vulnerabilities
+          name: Check Docker Image
+          image: <your-username>/<your-repo-name>:${CIRCLE_SHA1}
+      - docker/push:
+          name: Push Docker Image
+          image: <your-username>/<your-repo-name>
+          tag: ${CIRCLE_SHA1}
+          username: $DOCKERHUB_USERNAME  # Set in CircleCI project settings as environment variable
+          password: $DOCKERHUB_PASSWORD  # Set in CircleCI project settings as environment variable
 workflows:
-  build-and-test:
+  build-and-test-and-deploy:
     jobs:
       - test-python
-    # - deploy:
-    #     requires:
-    #       - test-python
+      - build-and-push-docker:
+          requires:
+            - test-python
