@@ -1,10 +1,9 @@
 version: 2.1
 orbs:
   python: circleci/python@2
-  docker: circleci/docker@1.7.0  # Add the Docker orb
+  docker: circleci/docker@1.7.0
 jobs:
   test-python:
-    # Install dependencies and run tests
     docker:
       - image: cimg/python:3.8-node
     steps:
@@ -16,32 +15,23 @@ jobs:
       - store_test_results:
           path: junit.xml
   build-and-push-docker:
-    # Use Docker environment
     docker:
       - image: cimg/base:stable
     steps:
       - checkout
-      # Setup Docker environment
       - setup_remote_docker:
-          version: 20.10.6
           docker_layer_caching: true
       - run:
-          name: Build Docker Image
+          name: Build and push Docker image
           command: |
-            docker build -t akashjanardhan/fastapiv2:${CIRCLE_SHA1} .
-      - docker/check:  # Optional: Check if the image has vulnerabilities
-          name: Check Docker Image
-          image: akashjanardhan/fastapiv2:${CIRCLE_SHA1}
-      - docker/push:
-          name: Push Docker Image
-          image: akashjanardhan/fastapiv2
-          tag: ${CIRCLE_SHA1}
-          username: $DOCKERHUB_USERNAME  # Set in CircleCI project settings as environment variable
-          password: $DOCKERHUB_PASSWORD  # Set in CircleCI project settings as environment variable
+            echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            docker build -t $DOCKERHUB_USERNAME/myapp:${CIRCLE_SHA1} .
+            docker push $DOCKERHUB_USERNAME/myapp:${CIRCLE_SHA1}
 workflows:
-  build-and-test-and-deploy:
+  version: 2
+  build-test-and-deploy:
     jobs:
       - test-python
       - build-and-push-docker:
-          requires:s
+          requires:
             - test-python
