@@ -37,7 +37,7 @@ jobs:
       - run:
           name: Deploy Application
           command: |
-            ssh -o StrictHostKeyChecking=no ubuntu@18.226.180.175 \<< EOF
+            ssh -vvv -o StrictHostKeyChecking=no ubuntu@18.226.180.175 \<< EOF
               sudo docker pull akashjanardhan/fastapiv2:test_cd
               sudo docker stop my-fastapi-app || true
               sudo docker rm my-fastapi-app || true
