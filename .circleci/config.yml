@@ -32,15 +32,18 @@ jobs:
     docker:
       - image: cimg/base:stable
     steps:
-      - checkout
-      - ssh/remote:
+      - add_ssh_keys:
+          fingerprints:
+            - "2048 SHA256:8XaZGPwgBw6qCSuly+W0f29rMp7x6G0SFIDs0ZBK/jU no comment (RSA)"
+      - run:
           name: Deploy Application
-          remote_host: "18.226.180.175"
           command: |
-            sudo docker pull akashjanardhan/fastapiv2:test_cd
-            sudo docker stop my-fastapi-app || true
-            sudo docker rm my-fastapi-app || true
-            sudo docker run -d --name my-fastapi-app -p 80:80 akashjanardhan/fastapiv2:test_cd
+            ssh -o StrictHostKeyChecking=no ubuntu@18.226.180.175 << EOF
+              sudo docker pull akashjanardhan/fastapiv2:test_cd
+              sudo docker stop my-fastapi-app || true
+              sudo docker rm my-fastapi-app || true
+              sudo docker run -d --name my-fastapi-app -p 80:80 akashjanardhan/fastapiv2:test_cd
+            EOF
 workflows:
   version: 2
   build-test-and-deploy:
