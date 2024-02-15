@@ -10,7 +10,7 @@ def read_time():
 
 @app.get("/")
 def read_time():
-    return "Enter /movie/<moviename> to get deatils ----  Enter /time to get time"
+    return "Enter /movie/<moviename> to get deatils ----  Enter /time to get time - test new change"
 
 @app.get("/movie/{title}")
 async def get_movie_details(title: str):
