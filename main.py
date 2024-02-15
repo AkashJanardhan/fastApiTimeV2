@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from datetime import datetime
+import httpx
 
 app = FastAPI()
 
@@ -9,4 +10,12 @@ def read_time():
 
 @app.get("/")
 def read_time():
-    return "Home"
+    return "Enter /movie/<moviename> to get deatils ----  Enter /time to get time"
+
+@app.get("/movie/{title}")
+async def get_movie_details(title: str):
+    api_key = "7d3f1ea5"
+    url = f"http://www.omdbapi.com/?t={title}&apikey={api_key}"
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
+    return response.json()
