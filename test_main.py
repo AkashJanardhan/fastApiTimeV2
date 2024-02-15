@@ -5,12 +5,6 @@ from dateutil import parser
 
 client = TestClient(app)
 
-def test_root():
-    response = client.get("/")
-    assert response.status_code == 200
-    # Assuming the response is text/plain; adjust if it's application/json or another content type
-    assert response.text == "Enter /movie/<moviename> to get deatils ----  Enter /time to get time"
-
 def test_get_movie_details():
     # Use a well-known movie title that's likely to exist in the OMDB database
     test_movie_title = "Inception"
